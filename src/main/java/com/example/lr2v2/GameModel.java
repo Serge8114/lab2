@@ -20,7 +20,9 @@ public class GameModel {
     private double velocityY;
     private AnimationTimer timer;
 
-    private static final double SPEED = 2;
+    private static final double NORMAL_SPEED = 2;
+    private static final double SLOWED_SPEED = 1;
+    private double currentSpeed = NORMAL_SPEED;
     private static final double DIRECTION_CHANGE_PROBABILITY = 0.008;
 
     public void startGame(double width, double height) {
@@ -32,8 +34,8 @@ public class GameModel {
         setBallPosition(new Point2D(startX, startY));
 
         double angle = random.nextDouble() * 2 * Math.PI;
-        velocityX = Math.cos(angle) * SPEED;
-        velocityY = Math.sin(angle) * SPEED;
+        velocityX = Math.cos(angle) * NORMAL_SPEED;
+        velocityY = Math.sin(angle) * NORMAL_SPEED;
 
         setGameActive(true);
         setScore(0);
@@ -65,8 +67,8 @@ public class GameModel {
 
         maybeChangeDirection();
 
-        double newX = currentPos.getX() + velocityX;
-        double newY = currentPos.getY() + velocityY;
+        double newX = currentPos.getX() + (velocityX / NORMAL_SPEED * currentSpeed);
+        double newY = currentPos.getY() + (velocityY / NORMAL_SPEED * currentSpeed);
 
         if (newX < 30 || newX > gamePaneWidth - 30) {
             velocityX *= -1;
@@ -84,24 +86,23 @@ public class GameModel {
     private void maybeChangeDirection() {
         if (random.nextDouble() < DIRECTION_CHANGE_PROBABILITY) {
             double angle = random.nextDouble() * 2 * Math.PI;
-            velocityX = Math.cos(angle) * SPEED;
-            velocityY = Math.sin(angle) * SPEED;
+            velocityX = Math.cos(angle) * NORMAL_SPEED;
+            velocityY = Math.sin(angle) * NORMAL_SPEED;
         }
     }
 
     public void handleBallHit() {
         if (isGameActive()) {
             setScore(getScore() + 1);
-            setBallColor(generateRandomColor());
         }
     }
 
-    private Color generateRandomColor() {
-        return Color.rgb(
-                random.nextInt(256),
-                random.nextInt(256),
-                random.nextInt(256)
-        );
+    public void slowDown() {
+        currentSpeed = SLOWED_SPEED;
+    }
+
+    public void restoreSpeed() {
+        currentSpeed = NORMAL_SPEED;
     }
 
     public IntegerProperty scoreProperty() {

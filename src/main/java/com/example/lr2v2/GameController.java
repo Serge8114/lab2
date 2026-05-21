@@ -19,6 +19,10 @@ public class GameController implements Initializable {
     private Button playButton;
     @FXML
     private Label scoreLabel;
+    @FXML
+    private Label titleLabel;
+    @FXML
+    private Label MessageLabel;
 
     private GameModel gameModel;
     private GameView gameView;
@@ -26,7 +30,7 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         gameModel = new GameModel();
-        gameView = new GameView(gamePane, ball, playButton, scoreLabel);
+        gameView = new GameView(gamePane, ball, playButton, scoreLabel, titleLabel, MessageLabel);
 
         gameView.bindToModel(gameModel);
 
